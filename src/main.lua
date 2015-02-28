@@ -76,7 +76,7 @@ function play_menu(menu)
 	-- Read the choices out to the caller and gather a selection. Numbers 10, 11 and 12
 	-- are converted to 0, star, and pound, respectively, when spoken to the user.
 	local choice_phrases = {}
-	for key, choice in ipairs(choices_by_key) do
+	for key, choice in pairs(choices_by_key) do
 		if     key == 10 then spoken_key = 0 
 		elseif key == 11 then spoken_key = 'star' 
 		elseif key == 12 then spoken_key = 'pound'
