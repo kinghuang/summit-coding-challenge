@@ -11,9 +11,7 @@ local actions = datastore.get_table('IVR Actions', 'map')
 -- Main entry point for the app
 function main()
 	channel.answer()
-	channel.say("This is an example application. Enter any number followed by the pound sign.")
-	local digits = channel.gather()
-	channel.say(digits)
+	perform_target('menu:main')
 	channel.hangup()
 end
 
