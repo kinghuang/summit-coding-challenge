@@ -48,11 +48,11 @@ function play_menu(menu)
 	
 	-- Loop through the choices and assign choices that have a specific key defined.
 	for index, choice in ipairs(choices) do
-		if choice.num ~= nil then
-			choice_num = choice.num == 0 and 10 or choice.num
+		if choice.number ~= nil then
+			choice_num = choice.number == 0 and 10 or choice.number
 			if choice_num == '*' then choice_num = 11 end
 			if choice_num == '#' then choice_num = 12 end
-			assert(choice_num >= 1 and choice_num <= 12, 'invalid choice num: ' .. choice.num)
+			assert(choice_num >= 1 and choice_num <= 12, 'invalid choice num: ' .. choice.number)
 
 			choices_by_key[choice_num] = choice
 		end
@@ -62,7 +62,7 @@ function play_menu(menu)
 	-- available key.
 	local next_num = 1
 	for index, choice in ipairs(choices) do
-		if choice.num == nil then
+		if choice.number == nil then
 			while choices_by_key[next_num] ~= nil do
 				next_num = next_num + 1
 			end
@@ -73,7 +73,8 @@ function play_menu(menu)
 		end
 	end
 
-	-- Read the choices out to the caller and gather a selection.
+	-- Read the choices out to the caller and gather a selection. Numbers 10, 11 and 12
+	-- are converted to 0, star, and pound, respectively, when spoken to the user.
 	local choice_phrases = {}
 	for key, choice in ipairs(choices_by_key) do
 		if     key == 10 then spoken_key = 0 
