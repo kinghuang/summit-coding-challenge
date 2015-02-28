@@ -2,10 +2,14 @@
 -- coverage: 0
 
 local datastore = require 'summit.datastore'
+local json      = require 'json'
+local speech    = require 'summit.speech'
 
 
 local menus = datastore.get_table('IVR Menus', 'map')
 local actions = datastore.get_table('IVR Actions', 'map')
+
+local menu_stack = {}
 
 
 -- Main entry point for the app
@@ -24,8 +28,8 @@ function perform_target(target)
 	-- item is used as a fallback table for the target item. This allows the default
 	-- item to provide standard values that the target items can optionally override.
 	local target_table = target_type == 'menu' and menus or actions
-	local default_item = target_table.get_row_by_key('default')
-	local target_item = target_table.get_row_by_key(target_name)
+	local default_item = target_table:get_row_by_key('default')
+	local target_item = target_table:get_row_by_key(target_name)
 	setmetatable(target_item.data, {__index = default_item.data})
 
 	-- Invoke the appropriate item to process the target item
@@ -34,7 +38,55 @@ function perform_target(target)
 end
 
 function play_menu(menu)
+	-- Push the menu to the menu stack to keep track of the caller's place in the menus.
+	table.insert(menu_stack, menu)
 
+	-- Decode the menu choices in json, and build a map of choices associated with
+	-- touch tone keys.
+	local choices = json:decode(menu.data.choices)
+	local choices_by_key = {}
+	
+	-- Loop through the choices and assign choices that have a specific key defined.
+	for index, choice in ipairs(choices) do
+		if choice.num ~= nil then
+			choice_num = choice.num == 0 and 10 or choice.num
+			if choice_num == '*' then choice_num = 11 end
+			if choice_num == '#' then choice_num = 12 end
+			assert(choice_num >= 1 and choice_num <= 12, 'invalid choice num: ' .. choice.num)
+
+			choices_by_key[choice_num] = choice
+		end
+	end
+
+	-- Loop through the choices again and assign the remaining choices to the first
+	-- available key.
+	local next_num = 1
+	for index, choice in ipairs(choices) do
+		if choice.num == nil then
+			while choices_by_key[next_num] ~= nil do
+				next_num = next_num + 1
+			end
+			choice_num = next_num == 0 and 10 or next_num
+			assert(choice_num >= 1 and choice_num <= 12, 'there are no more keys available for choices')
+
+			choices_by_key[choice_num] = choice
+		end
+	end
+
+	-- Read the choices out to the caller and gather a selection.
+	local choice_phrases = {}
+	for key, choice in ipairs(choices_by_key) do
+		if     key == 10 then spoken_key = 0 
+		elseif key == 11 then spoken_key = 'star' 
+		elseif key == 12 then spoken_key = 'pound'
+		else                  spoken_key = key end
+		choice_phrases[key] = string.format('%s for %s', spoken_key, choice.name)
+	end
+	last_choice_idx = table.maxn(choice_phrases)
+	choice_phrases[last_choice_idx] = string.format('or %s.', choice_phrases[last_choice_idx])
+	menu_prompt = string.format('Press %s', table.concat(choice_phrases, ', '))
+
+	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1})
 end
 
 function perform_action(action)
