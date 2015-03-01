@@ -13,7 +13,7 @@ local actions = datastore.get_table('IVR Actions', 'map')
 local menu_stack = {}
 
 
-function perform_target(target, options)
+function perform_target(target, options, info)
 	local target_type, target_name = select(3, target:find('([^:]*):([^:]*)'))
 	assert(target_type, 'invalid target: ' .. target)
 	assert((target_type == 'menu' or target_type == 'action'), 'invalid target type: ' .. target_type)
@@ -49,10 +49,10 @@ function perform_target(target, options)
 
 	-- Invoke the appropriate item to process the target item
 	local handler = target_type == 'menu' and play_menu or perform_action
-	handler(target_item, options)
+	handler(target_item, options, info)
 end
 
-function play_menu(menu, options)
+function play_menu(menu, options, info)
 	-- Push the menu to the menu stack to keep track of the caller's place in the menus.
 	table.insert(menu_stack, menu)
 
@@ -132,13 +132,13 @@ function play_menu(menu, options)
 
 	assert(choice ~= nil, 'caller selected a choice that cannot be found: ' .. pressed_key)
 	assert(choice.target ~= nil, 'the selected choice does not have a target: ' .. choice.name)
-	perform_target(choice.target, choice.target_options)
+	perform_target(choice.target, choice.target_options, info)
 end
 
-function perform_action(action, options)
+function perform_action(action, options, info)
 	action_f = actions_by_name[action.key]
 	assert(action_f ~= nil, 'could not find a function for action: ' .. action.key)
-	result = action_f(options)
+	result, info = action_f(options, info)
 
 	handler = result and options.on_success or options.on_failure
 	if handler ~= nil then
@@ -146,7 +146,7 @@ function perform_action(action, options)
 			channel.say(handler.message)
 		end
 		if handler.target then
-			perform_target(handler.target, handler.target_options)
+			perform_target(handler.target, handler.target_options, info)
 		end
 	end
 end

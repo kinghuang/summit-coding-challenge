@@ -7,7 +7,7 @@ local recording = require 'summit.recording'
 local time      = require 'summit.time'
 
 
-function dial_number(options)
+function dial_number(options, info)
 	local destination = options.destination
 	local dial_options = options.dial_options
 
@@ -18,28 +18,29 @@ function dial_number(options)
 	return ref.hangupCause == 'normal'
 end
 
-function send_email(options)
+function send_email(options, info)
 	return true
 end
 
-function register_callback(options)
+function register_callback(options, info)
 	return true
 end
 
-function record_voicemail(options)
+function record_voicemail(options, info)
 	channel.say('Please leave a message after the beep. Press any key when you are finished.')
 	record_result = channel.record()
 	voicemail = recording(record_result.id)
 
 	if voicemail then
-		options._attachment = voicemail.read()
-		return true
+		if info == nil then info = {} end
+		info.attachment = voicemail.read()
+		return true, info
 	else
 		return false
 	end
 end
 
-function say_hours_of_operation(options)
+function say_hours_of_operation(options, info)
 	-- Get the time zone and hours of operation from the organization table.
 	local org = datastore.get_table('Organization', 'map')
 	local operating_hours = org:get_row_by_key('operating_hours').data
@@ -115,17 +116,17 @@ function say_hours_of_operation(options)
 	return true
 end
 
-function say_location(options)
+function say_location(options, info)
 	return true
 end
 
-function cant_answer_out_partying(options)
+function cant_answer_out_partying(options, info)
 	channel.say('Sorry, we are unable to assist you at this time. Please try again later.')
 
 	return true
 end
 
-function say_greeting(options)
+function say_greeting(options, info)
 	-- Get the greeting message from the configuration table.
 	local config = datastore.get_table('IVR Configuration2', 'string')
 	local greeting = config:get_row_by_key('greeting')
@@ -137,7 +138,7 @@ function say_greeting(options)
 	return true
 end
 
-function say_closing(options)
+function say_closing(options, info)
 	-- Get the closing message from the configuration table.
 	local config = datastore.get_table('IVR Configuration2', 'string')
 	local closing = config:get_row_by_key('closing')
