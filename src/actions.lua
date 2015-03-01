@@ -44,6 +44,13 @@ function say_greeting(options)
 end
 
 function say_closing(options)
+	-- Get the closing message from the configuration table.
+	local config = datastore.get_table('IVR Configuration2', 'string')
+	local closing = config:get_row_by_key('closing')
+
+	if closing then
+		channel.say(closing.data)
+	end
 end
 
 
