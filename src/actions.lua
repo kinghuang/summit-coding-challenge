@@ -1,8 +1,8 @@
 -- This comment enforces unit-test coverage for this file:
 -- coverage: 0
 
+function dial_number(options)
 
-function call_number(options)
 	
 end
 
@@ -28,7 +28,7 @@ end
 -- security hole.
 actions_by_name = 
 {
-	['call_number'] = call_number,
+	['dial_number'] = dial_number,
 	['send_email'] = send_email,
 	['register_callback'] = register_callback,
 	['say_hours_of_operation'] = hours_of_operation,
