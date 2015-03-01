@@ -2,6 +2,12 @@
 -- coverage: 0
 
 function dial_number(options)
+	local destination = options.destination
+	local dial_options = options.dial_options
+
+	-- Perform dialing with the specified destination and options
+	-- from the action.
+	local ref = channel.dial(destination, dial_options)
 
 	
 end
