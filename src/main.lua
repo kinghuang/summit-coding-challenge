@@ -73,8 +73,9 @@ function play_menu(menu)
 		end
 	end
 
-	-- Read the choices out to the caller and gather a selection. Numbers 10, 11 and 12
-	-- are converted to 0, star, and pound, respectively, when spoken to the user.
+	-- Generate the spoken phrases for each choice, and also gather a table of
+	-- valid key presses. Numbers 10, 11 and 12 are converted to 0, star,
+	-- and pound, respectively, when spoken to the user.
 	local choice_phrases = {}
 	local valid_input = {}
 	for key, choice in pairs(choices_by_key) do
@@ -88,9 +89,13 @@ function play_menu(menu)
 	last_choice_idx = table.maxn(choice_phrases)
 	choice_phrases[last_choice_idx] = string.format('or %s.', choice_phrases[last_choice_idx])
 	
+	-- Combine the choice phrases into a prompt sentence, and the valid keys into
+	-- a grep pattern.
 	menu_prompt = string.format('Press %s', table.concat(choice_phrases, ', '))
 	valid_keys = string.format('[%s]', table.concat(valid_input, ''))
 
+	-- Invoke channel.gather to say the menu choices to the caller and
+	-- get the caller's choice.
 	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1, regex=valid_keys})
 
 	-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
