@@ -1,6 +1,7 @@
 -- This comment enforces unit-test coverage for this file:
 -- coverage: 0
 
+local datastore = require 'summit.datastore'
 local json      = require 'json'
 
 
@@ -32,8 +33,8 @@ function say_hours_of_operation(options)
 
 end
 
-function goodbye(options)
 
+function say_closing(options)
 end
 
 
@@ -46,5 +47,5 @@ actions_by_name =
 	['send_email'] = send_email,
 	['register_callback'] = register_callback,
 	['say_hours_of_operation'] = say_hours_of_operation,
-	['goodbye'] = goodbye
+	['say_closing'] = say_closing
 }
