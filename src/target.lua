@@ -140,9 +140,13 @@ function perform_action(action, options)
 	assert(action_f ~= nil, 'could not find a function for action: ' .. action.key)
 	result = action_f(options)
 
-	if result then
-		
-	else
-
+	handler = result and options.on_success or options.on_failure
+	if handler ~= nil then
+		if handler.message then
+			channel.say(handler.message)
+		end
+		if handler.target then
+			perform_target(handler.target, handler.target_options)
+		end
 	end
 end
