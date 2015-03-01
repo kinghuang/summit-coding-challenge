@@ -22,7 +22,7 @@ function dial_number(options)
 		perform_target(options.on_failure.target, options.on_failure.target_options)
 	end
 
-	return true
+	return ref.hangupCause == 'normal'
 end
 
 function send_email(options)
