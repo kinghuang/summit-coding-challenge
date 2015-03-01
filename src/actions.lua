@@ -77,10 +77,10 @@ function say_hours_of_operation(options)
 	-- hours for all workdays, followed by up to 2 exceptions. Otherwise, say
 	-- the hours for each work day separately.
 	for k, opts in ipairs({
-		{workweek_exceptions, 3, typical_workweek_days},
-		{weekend_exceptions, 0, typical_weekend_days}
+		{workweek_exceptions, 3, typical_workweek_days, 'weekdays'},
+		{weekend_exceptions, 0, typical_weekend_days, 'weekends'}
 	}) do
-		local exception_days, exception_limit, all_days = unpack(opts)
+		local exception_days, exception_limit, all_days, type_of_days = unpack(opts)
 
 		if #exception_days < exception_limit then
 			local exception_conjunctions = {'Except', 'And'}
