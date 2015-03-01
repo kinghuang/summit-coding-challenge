@@ -33,6 +33,15 @@ function say_hours_of_operation(options)
 
 end
 
+function say_greeting(options)
+	-- Get the greeting message from the configuration table.
+	local config = datastore.get_table('IVR Configuration2', 'string')
+	local greeting = config:get_row_by_key('greeting')
+
+	if greeting then
+		channel.say(greeting.data)
+	end
+end
 
 function say_closing(options)
 end
@@ -47,5 +56,6 @@ actions_by_name =
 	['send_email'] = send_email,
 	['register_callback'] = register_callback,
 	['say_hours_of_operation'] = say_hours_of_operation,
+	['say_greeting'] = say_greeting,
 	['say_closing'] = say_closing
 }
