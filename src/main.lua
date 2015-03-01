@@ -7,15 +7,14 @@ local target    = require 'target'
 
 -- Main entry point for the app
 function main()
-	-- Get the configuration table for thea app.
+	-- Get the first target from the configuration table.
+	-- The first target is typically a menu.
 	local config = datastore.get_table('IVR Configuration2', 'string')
-
-	-- Get the greeting and first target. The first target is typically a menu.
 	local first_target = config:get_row_by_key('first_target')
+	assert(first_target ~= nil, 'first_target is not specified')
 
 	channel.answer()
 	perform_target('action:say_greeting')
-	assert(first_target ~= nil, 'first_target is not specified')
 	perform_target(first_target.data)
 	perform_target('action:say_closing')
 	channel.hangup()
