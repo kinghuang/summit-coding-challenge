@@ -31,7 +31,12 @@ function record_voicemail(options)
 	record_result = channel.record()
 	voicemail = recording(record_result.id)
 
-	return true
+	if voicemail then
+		options._attachment = voicemail.read()
+		return true
+	else
+		return false
+	end
 end
 
 function say_hours_of_operation(options)
