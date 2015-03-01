@@ -81,7 +81,7 @@ function play_menu(menu)
 		elseif key == 11 then spoken_key = 'star' 
 		elseif key == 12 then spoken_key = 'pound'
 		else                  spoken_key = key end
-		choice_phrases[key] = string.format('%s for %s', spoken_key, choice.name)
+		table.insert(choice_phrases, string.format('%s for %s', spoken_key, choice.name))
 	end
 	last_choice_idx = table.maxn(choice_phrases)
 	choice_phrases[last_choice_idx] = string.format('or %s.', choice_phrases[last_choice_idx])
