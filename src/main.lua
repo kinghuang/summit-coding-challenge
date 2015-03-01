@@ -19,7 +19,7 @@ function main()
 	channel.hangup()
 end
 
-function perform_target(target)
+function perform_target(target, options)
 	target_type, target_name = select(3, target:find('([^:]*):([^:]*)'))
 	assert(target_type, 'invalid target: ' .. target)
 	assert((target_type == 'menu' or target_type == 'action'), 'invalid target type: ' .. target_type)
