@@ -76,18 +76,22 @@ function play_menu(menu)
 	-- Read the choices out to the caller and gather a selection. Numbers 10, 11 and 12
 	-- are converted to 0, star, and pound, respectively, when spoken to the user.
 	local choice_phrases = {}
+	local valid_input = {}
 	for key, choice in pairs(choices_by_key) do
-		if     key == 10 then spoken_key = 0 
-		elseif key == 11 then spoken_key = 'star' 
-		elseif key == 12 then spoken_key = 'pound'
-		else                  spoken_key = key end
+		if     key == 10 then spoken_key = 0       pressed_key = '0'
+		elseif key == 11 then spoken_key = 'star'  pressed_key = '*' 
+		elseif key == 12 then spoken_key = 'pound' pressed_key = '#'
+		else                  spoken_key = key     pressed_key = key end
 		table.insert(choice_phrases, string.format('%s for %s', spoken_key, choice.name))
+		table.insert(valid_input, pressed_key)
 	end
 	last_choice_idx = table.maxn(choice_phrases)
 	choice_phrases[last_choice_idx] = string.format('or %s.', choice_phrases[last_choice_idx])
+	
 	menu_prompt = string.format('Press %s', table.concat(choice_phrases, ', '))
+	valid_keys = string.format('[%s]', table.concat(valid_input, ''))
 
-	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1})
+	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1, regex=valid_keys})
 
 	-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
 	-- 10, 11 and 12, respectively, and everything else from a string to a number.
