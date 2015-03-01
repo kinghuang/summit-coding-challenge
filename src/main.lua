@@ -34,10 +34,10 @@ function perform_target(target, options)
 
 	-- Invoke the appropriate item to process the target item
 	local handler = target_type == 'menu' and play_menu or perform_action
-	handler(target_item)
+	handler(target_item, options)
 end
 
-function play_menu(menu)
+function play_menu(menu, options)
 	-- Push the menu to the menu stack to keep track of the caller's place in the menus.
 	table.insert(menu_stack, menu)
 
@@ -111,7 +111,7 @@ function play_menu(menu)
 	perform_target(choice.target, choice.target_options)
 end
 
-function perform_action(action)
+function perform_action(action, options)
 
 end
 
