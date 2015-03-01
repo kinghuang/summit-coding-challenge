@@ -45,6 +45,6 @@ actions_by_name =
 	['dial_number'] = dial_number,
 	['send_email'] = send_email,
 	['register_callback'] = register_callback,
-	['say_hours_of_operation'] = hours_of_operation,
+	['say_hours_of_operation'] = say_hours_of_operation,
 	['goodbye'] = goodbye
 }
