@@ -1,6 +1,9 @@
 -- This comment enforces unit-test coverage for this file:
 -- coverage: 0
 
+local json      = require 'json'
+
+
 function dial_number(options)
 	local destination = options.destination
 	local dial_options = options.dial_options
@@ -9,7 +12,12 @@ function dial_number(options)
 	-- from the action.
 	local ref = channel.dial(destination, dial_options)
 
-	
+	-- If the call result was not normal and this action has a failure
+	-- target defined, perform the specified target.
+	if ref.hangupCause ~= 'normal' and options.on_failure ~= nil then
+		channel.say('Sorry, your call could not be connected.')
+		perform_target(options.on_failure.target, options.on_failure.target_options)
+	end
 end
 
 function send_email(options)
