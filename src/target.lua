@@ -29,11 +29,11 @@ function perform_target(target, options)
 	-- Similarly process the options
 	if options == nil then options = {} end
 	if target_item.options ~= nil then
-		local target_options = json.decode(target_item.options)
+		local target_options = json:decode(target_item.options)
 		setmetatable(options, {__index = target_options})
 	end
 	if default_item.options ~= nil then
-		local default_options =  json.decode(default_item.options)
+		local default_options =  json:decode(default_item.options)
 		local mt = getmetatable(options)
 		if mt ~= nil then
 			if mt.__index ~= nil then
