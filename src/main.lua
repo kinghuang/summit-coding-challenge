@@ -88,6 +88,14 @@ function play_menu(menu)
 	menu_prompt = string.format('Press %s', table.concat(choice_phrases, ', '))
 
 	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1})
+
+	-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
+	-- 10, 11 and 12, respectively, and everything else from a string to a number.
+	if     pressed_key == '0' then pressed_key = 10
+	elseif pressed_key == '*' then pressed_key = 11
+	elseif pressed_key == '#' then pressed_key = 12
+	else                           pressed_key = tonumber(pressed_key) end
+	local choice = choices_by_key[pressed_key]
 end
 
 function perform_action(action)
