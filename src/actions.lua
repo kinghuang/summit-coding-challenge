@@ -3,6 +3,7 @@
 
 local datastore = require 'summit.datastore'
 local json      = require 'json'
+local recording = require 'summit.recording'
 
 
 function dial_number(options)
@@ -27,6 +28,12 @@ end
 
 function register_callback(options)
 
+end
+
+function record_voicemail(options)
+	channel.say('Please leave a message after the beep. Press any key when you are finished.')
+	record_result = channel.record()
+	voicemail = recording(record_result.id)
 end
 
 function say_hours_of_operation(options)
@@ -62,6 +69,7 @@ actions_by_name =
 	['dial_number'] = dial_number,
 	['send_email'] = send_email,
 	['register_callback'] = register_callback,
+	['record_voicemail'] = record_voicemail,
 	['say_hours_of_operation'] = say_hours_of_operation,
 	['say_greeting'] = say_greeting,
 	['say_closing'] = say_closing
