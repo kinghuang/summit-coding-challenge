@@ -138,5 +138,11 @@ end
 function perform_action(action, options)
 	action_f = actions_by_name[action.key]
 	assert(action_f ~= nil, 'could not find a function for action: ' .. action.key)
-	action_f(options)
+	result = action_f(options)
+
+	if result then
+		
+	else
+
+	end
 end

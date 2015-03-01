@@ -21,20 +21,24 @@ function dial_number(options)
 		channel.say('Sorry, your call could not be connected.')
 		perform_target(options.on_failure.target, options.on_failure.target_options)
 	end
+
+	return true
 end
 
 function send_email(options)
-
+	return true
 end
 
 function register_callback(options)
-
+	return true
 end
 
 function record_voicemail(options)
 	channel.say('Please leave a message after the beep. Press any key when you are finished.')
 	record_result = channel.record()
 	voicemail = recording(record_result.id)
+
+	return true
 end
 
 function say_hours_of_operation(options)
@@ -109,10 +113,14 @@ function say_hours_of_operation(options)
 
 	-- Say the complete hours of operation to the caller.
 	channel.say(table.concat(phrases, ' '))
+
+	return true
 end
 
 function cant_answer_out_partying(options)
 	channel.say('Sorry, we are unable to assist you at this time. Please try again later.')
+
+	return true
 end
 
 function say_greeting(options)
@@ -123,6 +131,8 @@ function say_greeting(options)
 	if greeting then
 		channel.say(greeting.data)
 	end
+
+	return true
 end
 
 function say_closing(options)
@@ -133,6 +143,8 @@ function say_closing(options)
 	if closing then
 		channel.say(closing.data)
 	end
+
+	return true
 end
 
 
