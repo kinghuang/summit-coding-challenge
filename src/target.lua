@@ -98,7 +98,13 @@ function play_menu(menu, options)
 		elseif key == 11 then spoken_key = 'star'  pressed_key = '*' 
 		elseif key == 12 then spoken_key = 'pound' pressed_key = '#'
 		else                  spoken_key = key     pressed_key = key end
-		table.insert(choice_phrases, string.format('%s for %s', spoken_key, choice.name))
+
+		-- Determine the appropriate preposition to use for the target.
+		-- For us used for menus, to is used for actions.
+		local target_type, target_name = select(3, choice.target:find('([^:]*):([^:]*)'))
+		local preposition = target_type == 'menu' and 'for' or 'to'
+
+		table.insert(choice_phrases, string.format('%s %s %s', spoken_key, preposition, choice.name))
 		table.insert(valid_input, pressed_key)
 	end
 	last_choice_idx = table.maxn(choice_phrases)
