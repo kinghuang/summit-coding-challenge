@@ -107,6 +107,9 @@ function play_menu(menu, options)
 
 	-- Invoke channel.gather to say the menu choices to the caller and
 	-- get the caller's choice.
+	if menu.name then
+		channel.say(menu.name.data)
+	end
 	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1, regex=valid_keys})
 
 	-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
