@@ -115,6 +115,10 @@ function say_hours_of_operation(options)
 	return true
 end
 
+function say_location(options)
+	return true
+end
+
 function cant_answer_out_partying(options)
 	channel.say('Sorry, we are unable to assist you at this time. Please try again later.')
 
@@ -156,6 +160,7 @@ actions_by_name =
 	['register_callback'] = register_callback,
 	['record_voicemail'] = record_voicemail,
 	['say_hours_of_operation'] = say_hours_of_operation,
+	['say_location'] = say_location,
 	['cant_answer_out_partying'] = cant_answer_out_partying,
 	['say_greeting'] = say_greeting,
 	['say_closing'] = say_closing
