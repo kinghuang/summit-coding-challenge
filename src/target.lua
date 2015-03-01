@@ -1,6 +1,7 @@
 -- This comment enforces unit-test coverage for this file:
 -- coverage: 0
 
+local actions   = require 'actions'
 local datastore = require 'summit.datastore'
 local json      = require 'json'
 local speech    = require 'summit.speech'
@@ -108,5 +109,7 @@ function play_menu(menu, options)
 end
 
 function perform_action(action, options)
-
+	action_f = actions_by_name[action.key]
+	assert(action_f ~= nil, 'could not find a function for action: ' .. action.key)
+	action_f(options)
 end
