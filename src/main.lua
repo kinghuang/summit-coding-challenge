@@ -105,6 +105,10 @@ function play_menu(menu)
 	elseif pressed_key == '#' then pressed_key = 12
 	else                           pressed_key = tonumber(pressed_key) end
 	local choice = choices_by_key[pressed_key]
+
+	assert(choice ~= nil, 'caller selected a choice that cannot be found: ' .. pressed_key)
+	assert(choice.target ~= nil, 'the selected choice does not have a target: ' .. choice.name)
+	perform_target(choice.target, choice.target_options)
 end
 
 function perform_action(action)
