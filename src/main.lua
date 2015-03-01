@@ -17,7 +17,7 @@ function main()
 	perform_target('action:say_greeting')
 	assert(first_target ~= nil, 'first_target is not specified')
 	perform_target(first_target.data)
-	perform_target('action:goodbye')
+	perform_target('action:say_closing')
 	channel.hangup()
 end
 
