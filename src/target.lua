@@ -26,6 +26,27 @@ function perform_target(target, options)
 	local target_item = target_table:get_row_by_key(target_name)
 	setmetatable(target_item.data, {__index = default_item.data})
 
+	-- Similarly process the options
+	if options == nil then options = {} end
+	if target_item.options ~= nil then
+		local target_options = json.decode(target_item.options)
+		setmetatable(options, {__index = target_options})
+	end
+	if default_item.options ~= nil then
+		local default_options =  json.decode(default_item.options)
+		local mt = getmetatable(options)
+		if mt ~= nil then
+			if mt.__index ~= nil then
+				setmetatable(mt.__index, {__index = default_options})
+			else
+				mt.__index = default_options
+			end
+			setmetatable(options, mt)
+		else
+			setmetatable(options, {__index = default_options})
+		end
+	end
+
 	-- Invoke the appropriate item to process the target item
 	local handler = target_type == 'menu' and play_menu or perform_action
 	handler(target_item, options)
