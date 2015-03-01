@@ -25,6 +25,7 @@ function main()
 	if greeting then
 		channel.say(greeting.data)
 	end
+	assert(first_target ~= nil, 'first_target is not specified')
 	perform_target(first_target.data)
 	channel.hangup()
 end
