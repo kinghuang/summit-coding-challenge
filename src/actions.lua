@@ -6,6 +6,7 @@ local email     = require 'summit.email'
 local json      = require 'json'
 local recording = require 'summit.recording'
 local sms       = require 'summit.sms'
+local speech    = require 'summit.speech'
 local time      = require 'summit.time'
 
 
@@ -166,6 +167,26 @@ function say_location(options, info)
 	return true
 end
 
+function send_map(options, info)
+	-- Ask the caller for a number to text the map to
+	local prompt = 'Please enter a number to send the map to, followed by the pound key.'
+	local to = channel.gather({play=speech(prompt), minDigits=7, maxDigits=14})
+	
+	-- Prep the from and message. Retrieve a map url as the message.
+	local org = datastore.get_table('Organization', 'map')
+	local location = org:get_row_by_key('location').data
+	local map_url = json:decode(location.map_url)
+	local name = org:get_row_by_key('name').data.spoken
+
+	local from = options.from
+	local message = string.format('%s: %s', name, map_url.google)
+
+	-- Send the message to the specified number
+	local success, err = sms.send(to, from, message)
+
+	return success
+end
+
 function cant_answer_out_partying(options, info)
 	channel.say('Sorry, we are unable to assist you at this time. Please try again later.')
 
@@ -213,6 +234,7 @@ actions_by_name =
 	['record_voicemail'] = record_voicemail,
 	['say_hours_of_operation'] = say_hours_of_operation,
 	['say_location'] = say_location,
+	['send_map'] = send_map,
 	['cant_answer_out_partying'] = cant_answer_out_partying,
 	['say_greeting'] = say_greeting,
 	['say_closing'] = say_closing,
