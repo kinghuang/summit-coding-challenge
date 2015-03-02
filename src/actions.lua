@@ -154,12 +154,13 @@ function say_hours_of_operation(options, info)
 end
 
 function say_location(options, info)
-	-- Get the location from the organization table.
+	-- Get the organization name and location from the organization table.
 	local org = datastore.get_table('Organization', 'map')
+	local name = org:get_row_by_key('name').data.spoken
 	local location = org:get_row_by_key('location').data
 
 	-- Form a sentence for the location and say it to the caller.
-	local sentence = string.format('We are located at %s, %s, %s, %s.', location.street, location.city, location.province, location.country)
+	local sentence = string.format('%s is located at %s, %s, %s, %s.', name, location.street, location.city, location.province, location.country)
 	channel.say(sentence)
 
 	return true
