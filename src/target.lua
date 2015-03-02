@@ -120,19 +120,27 @@ function play_menu(menu, options, info)
 	if menu.name then
 		channel.say(menu.name.data)
 	end
-	local pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1, regex=valid_keys})
+	
+	local pressed_key = nil
+	local loop_count = 0
+	while pressed_key == nil and loop_count < 3 do
+		pressed_key = channel.gather({play=speech(menu_prompt), minDigits=1, maxDigits=1, regex=valid_keys})
+		if pressed_key then
+			-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
+			-- 10, 11 and 12, respectively, and everything else from a string to a number.
+			if     pressed_key == '0' then pressed_key = 10
+			elseif pressed_key == '*' then pressed_key = 11
+			elseif pressed_key == '#' then pressed_key = 12
+			else                           pressed_key = tonumber(pressed_key) end
+			local choice = choices_by_key[pressed_key]
 
-	-- Get the choice that the user made, and invoke the target. Convert 0, *, and # to
-	-- 10, 11 and 12, respectively, and everything else from a string to a number.
-	if     pressed_key == '0' then pressed_key = 10
-	elseif pressed_key == '*' then pressed_key = 11
-	elseif pressed_key == '#' then pressed_key = 12
-	else                           pressed_key = tonumber(pressed_key) end
-	local choice = choices_by_key[pressed_key]
-
-	assert(choice ~= nil, 'caller selected a choice that cannot be found: ' .. pressed_key)
-	assert(choice.target ~= nil, 'the selected choice does not have a target: ' .. choice.name)
-	perform_target(choice.target, choice.target_options, info)
+			assert(choice ~= nil, 'caller selected a choice that cannot be found: ' .. pressed_key)
+			assert(choice.target ~= nil, 'the selected choice does not have a target: ' .. choice.name)
+			perform_target(choice.target, choice.target_options, info)
+		else
+			loop_count = loop_count + 1
+		end
+	end
 end
 
 function perform_action(action, options, info)
