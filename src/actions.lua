@@ -55,8 +55,7 @@ function send_sms(options, info)
 	local from = parameters.from
 	local message = parameters.message
 
-	-- local success, err = sms.send(to, from, message)
-	local success, err = sms.send(from, to, message)
+	local success, err = sms.send(to, from, message)
 	if err then info['error'] = err end
 	return success, info
 end
