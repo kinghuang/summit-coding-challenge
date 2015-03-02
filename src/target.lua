@@ -4,6 +4,7 @@
 local actions   = require 'actions'
 local datastore = require 'summit.datastore'
 local json      = require 'json'
+local log       = require 'summit.log'
 local speech    = require 'summit.speech'
 
 
@@ -14,6 +15,8 @@ local menu_stack = {}
 
 
 function perform_target(target, options, info)
+	log.info('perform_target: ', target)
+
 	local target_type, target_name = select(3, target:find('([^:]*):([^:]*)'))
 	assert(target_type, 'invalid target: ' .. target)
 	assert((target_type == 'menu' or target_type == 'action'), 'invalid target type: ' .. target_type)
@@ -53,6 +56,8 @@ function perform_target(target, options, info)
 end
 
 function play_menu(menu, options, info)
+	log.info('play_menu: ', menu.key)
+
 	-- Push the menu to the menu stack to keep track of the caller's place in the menus.
 	table.insert(menu_stack, menu)
 
@@ -144,6 +149,8 @@ function play_menu(menu, options, info)
 end
 
 function perform_action(action, options, info)
+	log.info('perform_action: ', action.key)
+
 	action_f = actions_by_name[action.key]
 	assert(action_f ~= nil, 'could not find a function for action: ' .. action.key)
 	result, info = action_f(options, info)
