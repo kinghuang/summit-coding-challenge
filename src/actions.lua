@@ -33,7 +33,7 @@ function record_voicemail(options, info)
 
 	if voicemail then
 		if info == nil then info = {} end
-		info.attachment = voicemail.read()
+		info.attachment = voicemail
 		return true, info
 	else
 		return false
