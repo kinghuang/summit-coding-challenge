@@ -118,7 +118,7 @@ function play_menu(menu, options, info)
 	-- Invoke channel.gather to say the menu choices to the caller and
 	-- get the caller's choice.
 	if menu.name then
-		channel.say(menu.name.data)
+		channel.say(menu.data.name)
 	end
 	
 	local pressed_key = nil
