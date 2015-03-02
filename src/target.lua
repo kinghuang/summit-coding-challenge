@@ -117,7 +117,7 @@ function play_menu(menu, options, info)
 
 	-- Invoke channel.gather to say the menu choices to the caller and
 	-- get the caller's choice.
-	if menu.name then
+	if menu.data.name then
 		channel.say(menu.data.name)
 	end
 	
