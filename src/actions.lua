@@ -1,6 +1,7 @@
 -- This comment enforces unit-test coverage for this file:
 -- coverage: 0
 
+local asset     = require 'summit.asset'
 local datastore = require 'summit.datastore'
 local email     = require 'summit.email'
 local json      = require 'json'
@@ -60,6 +61,7 @@ function send_sms(options, info)
 end
 
 function register_callback(options, info)
+	print('register_callback (to be implemented)')
 	return true
 end
 
@@ -217,6 +219,13 @@ function say_closing(options, info)
 	return true
 end
 
+function play_sound(options, info)
+	-- Play an audio asset to the caller
+	channel.play(options.asset_name)
+
+	return true
+end
+
 function no_op(options, info)
 	return true, info
 end
@@ -238,5 +247,6 @@ actions_by_name =
 	['cant_answer_out_partying'] = cant_answer_out_partying,
 	['say_greeting'] = say_greeting,
 	['say_closing'] = say_closing,
+	['play_sound'] = play_sound,
 	['no_op'] = no_op
 }
