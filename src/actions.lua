@@ -5,6 +5,7 @@ local datastore = require 'summit.datastore'
 local email     = require 'summit.email'
 local json      = require 'json'
 local recording = require 'summit.recording'
+local sms       = require 'summit.sms'
 local time      = require 'summit.time'
 
 
@@ -35,6 +36,24 @@ function send_email(options, info)
 	local email_opts = parameters.files and {files=parameters.files} or nil
 
 	local success, err = email.send(to_addr, from_addr, subject, body, email_opts)
+	if err then info['error'] = err end
+	return success, info
+end
+
+function send_sms(options, info)
+	-- If options and info exist and are both Tables, set options as the
+	-- metatable index of info, so that email parameters can be overridden.
+	if type(options) == 'table' and type(info) == 'table' then
+		setmetatable(info, {__index = options})
+	end
+	local parameters = info and info or options
+
+	-- Get the sms parameters
+	local to = parameters.to
+	local from = parameters.from
+	local message = parameters.message
+
+	local success, err = sms.send(to, from, message)
 	if err then info['error'] = err end
 	return success, info
 end
@@ -176,6 +195,7 @@ actions_by_name =
 {
 	['dial_number'] = dial_number,
 	['send_email'] = send_email,
+	['send_sms'] = send_sms,
 	['register_callback'] = register_callback,
 	['record_voicemail'] = record_voicemail,
 	['say_hours_of_operation'] = say_hours_of_operation,
