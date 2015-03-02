@@ -195,6 +195,10 @@ function say_closing(options, info)
 	return true
 end
 
+function no_op(options, info)
+	return true, info
+end
+
 
 -- Map from action names to action functions. It's possible to
 -- just get them from _G, but then it'd just be a big glaring
@@ -210,5 +214,6 @@ actions_by_name =
 	['say_location'] = say_location,
 	['cant_answer_out_partying'] = cant_answer_out_partying,
 	['say_greeting'] = say_greeting,
-	['say_closing'] = say_closing
+	['say_closing'] = say_closing,
+	['no_op'] = no_op
 }
