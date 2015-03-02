@@ -2,6 +2,7 @@
 -- coverage: 0
 
 local datastore = require 'summit.datastore'
+local email     = require 'summit.email'
 local json      = require 'json'
 local recording = require 'summit.recording'
 local time      = require 'summit.time'
@@ -19,7 +20,23 @@ function dial_number(options, info)
 end
 
 function send_email(options, info)
-	return true
+	-- If options and info exist and are both Tables, set options as the
+	-- metatable index of info, so that email parameters can be overridden.
+	if type(options) == 'table' and type(info) == 'table' then
+		setmetatable(info, {__index = options})
+	end
+	local parameters = info and info or options
+
+	-- Get the email parameters
+	local to_addr = parameters.to_addr
+	local from_addr = parameters.from_addr
+	local subject = parameters.subject
+	local body = parameters.body
+	local email_opts = parameters.files and {files=parameters.files} or nil
+
+	local success, err = email.send(to_addr, from_addr, subject, body, email_opts)
+	if err then info['error'] = err end
+	return success, info
 end
 
 function register_callback(options, info)
